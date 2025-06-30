@@ -8,5 +8,5 @@ Route::post('/', [InitializationController::class, 'initialize'])
     ->name('admin.initialize');
 
 //TODO: Check initialization - To redirect users to Initialization page
-Route::get('/', [InitializationController::class, 'isInitialized'])
+Route::get('/', [InitializationController::class, 'checkInitialization'])
     ->name('admin.initialize.check');

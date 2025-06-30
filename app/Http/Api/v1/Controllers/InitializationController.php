@@ -10,17 +10,37 @@ use App\Models\Landlord\LandlordRole;
 use App\Models\Landlord\Tenant;
 use App\Models\Landlord\LandlordUser;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class InitializationController extends Controller
 {
 
-    public function initialize(InitializeRequest $request): JsonResponse {
+    public function checkInitialization(Request $request): JsonResponse {
+        if($this->isInitialized()){
+            return response()->json(
+                [
+                    "message" => "Sistema já inicializado",
+                ]);
+        }else{
+            return response()->json(
+                [
+                    "message" => "Sistema já inicializado",
+                ],
+            404);
+        }
+    }
 
+    protected function isInitialized(): bool {
         $users_count = LandlordUser::all()->count();
         $tenants_count = Tenant::all()->count();
 
-        if($users_count > 0 || $tenants_count > 0){
+        return $users_count > 0 || $tenants_count > 0;
+    }
+
+    public function initialize(InitializeRequest $request): JsonResponse {
+
+        if($this->isInitialized()){
             return response()->json(
                 [
                     "success" => false,
