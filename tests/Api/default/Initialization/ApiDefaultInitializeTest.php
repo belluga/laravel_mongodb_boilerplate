@@ -7,6 +7,11 @@ use Tests\TestCase;
 
 class ApiDefaultInitializeTest extends TestCase {
 
+    public function testInitializationCheckBefore(): void {
+        $response = $this->initializationCheck();
+        $response->assertStatus(404);
+    }
+
     public function testInitiate(): void {
 
         $this->landlord->user_superadmin->name = fake()->name();
@@ -53,6 +58,18 @@ class ApiDefaultInitializeTest extends TestCase {
         ]);
     }
 
+    public function testInitializationCheckAfter(): void {
+        $response = $this->initializationCheck();
+        $response->assertStatus(200);
+    }
+
+    protected function initializationCheck(): TestResponse {
+        return $this->json(
+            method: 'get',
+            uri: "initialize",
+        );
+    }
+
     protected function initiate(): TestResponse {
         return $this->json(
             method: 'post',
@@ -75,7 +92,8 @@ class ApiDefaultInitializeTest extends TestCase {
                 "name" => $this->landlord->tenant_primary->name,
                 "subdomain" => $this->landlord->tenant_primary->subdomain,
                 "domains" => [
-                    "localhost"
+                    "localhost",
+                    "portal.unifast.com.br"
                 ]
             ],
             "role" => [
